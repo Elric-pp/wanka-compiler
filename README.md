@@ -1,23 +1,25 @@
 # wanka-compiler
 
-AI 玩卡编译器：将「图片 + 文案意图」编译成可直接使用的卡片配置，并将图片上传到腾讯云 COS。
+AI 玩卡编译器：将「图片 + 文案意图」**编译**成可直接使用的卡片配置，并将图片上传到腾讯云 COS。
 
-- 使用 **OpenAI** 生成卡片文案
+- 使用 **OpenAI** 生成卡片文案和（可选）集换式卡牌字段
 - 使用 **node-vibrant** 分析图片主色，生成配色方案
 - 使用 **腾讯云 COS** 存储图片资源
-- 输出统一的 **CardConfig JSON**，方便前端/小程序/活动后台直接消费
+- 输出统一的 **CardConfig JSON**，方便前端 / 小程序 / 活动后台直接消费
 
-## 安装
+适配 **Node.js 18+（包含 22）**。
+
+---
+
+## 快速开始（Quick Start）
+
+**1. 安装依赖**
 
 ```bash
 npm install
 ```
 
-> 依赖：Node.js 18+，已在腾讯云开通 COS，并准备好 OpenAI 兼容接口。
-
-## 环境变量配置
-
-在项目根目录创建 `.env`（或通过其他方式注入环境变量）：
+**2. 配置环境变量**（根目录新建 `.env`）：
 
 ```env
 # 腾讯云 COS
@@ -31,6 +33,32 @@ OPENAI_API_KEY=sk-xxx
 OPENAI_BASE_URL=https://api.openai.com/v1   # 或自建网关地址
 OPENAI_MODEL=gpt-4.1-mini                   # 或你的模型名称
 ```
+
+环境变量一览：
+
+| 变量名           | 必填 | 说明                                   |
+| ---------------- | ---- | -------------------------------------- |
+| `COS_SECRET_ID`  | 是   | 腾讯云访问密钥 SecretId                |
+| `COS_SECRET_KEY` | 是   | 腾讯云访问密钥 SecretKey               |
+| `COS_BUCKET`     | 是   | COS Bucket 名称                        |
+| `COS_REGION`     | 是   | COS 区域，例如 `ap-guangzhou`         |
+| `OPENAI_API_KEY` | 是   | OpenAI 或兼容接口的 API Key           |
+| `OPENAI_BASE_URL`| 否   | OpenAI 兼容接口地址，默认官方地址     |
+| `OPENAI_MODEL`   | 否   | 模型名称，默认 `gpt-4.1-mini`         |
+
+**3. 运行一个最简单的编译示例**
+
+```bash
+node src/cli.js compile ./example/card.png --intent "生日祝福卡"
+```
+
+终端将输出一份 `CardConfig` JSON，其中包含：
+
+- COS 上的图片 URL
+- 自动分析的主色 / 副色 / 文字色
+- AI 生成的标题 / 副标题 / 正文
+
+---
 
 ## 核心概念：CardConfig
 
@@ -75,7 +103,11 @@ interface CardConfig {
 }
 ```
 
+---
+
 ## 命令行使用
+
+### 普通卡片模式（default 模板）
 
 最简单的方式是通过 CLI 调用编译器：
 
@@ -83,10 +115,10 @@ interface CardConfig {
 node src/cli.js compile ./example/card.png --intent "生日祝福卡"
 ```
 
-输出：
+输出包含：
 
-- 自动分析图片主色/辅色 + 推荐文字颜色
-- 调用 OpenAI 生成标题/副标题/正文文案
+- 自动分析图片主色 / 副色 + 推荐文字颜色
+- 调用 OpenAI 生成标题 / 副标题 / 正文文案
 - 上传图片到腾讯云 COS，得到图片 URL
 - 最终在 stdout 输出 `CardConfig` JSON
 
@@ -107,6 +139,8 @@ node src/cli.js compile ./example/monster.png \
 - `effect`: 卡牌效果描述
 - `flavorText`: 一两句背景故事/风味文本
 
+---
+
 ## 作为库使用
 
 你也可以在自己的 Node.js 代码中直接调用：
@@ -126,6 +160,8 @@ console.log(config.meta.attack); // 攻击力
 console.log(config.meta.effect); // 卡牌效果
 ```
 
+---
+
 ## 文件结构
 
 - `src/upload.js`：封装腾讯云 COS 上传逻辑
@@ -134,9 +170,11 @@ console.log(config.meta.effect); // 卡牌效果
 - `src/cli.js`：命令行入口
 - `package.json`：项目配置（name: `wanka-compiler`）
 
+---
+
 ## 后续可以扩展的方向
 
-- 支持多种卡片模板（社交分享图、海报、Banner 等）
-- 批量编译：读取文件夹/配置文件，一次性生成多张卡片
+- 支持更多卡片模板（社交分享图、海报、Banner 等）
+- 批量编译：读取文件夹 / 配置文件，一次性生成多张卡片
 - 插件化后端：支持更多存储、更多模型服务
 - 集成到 Web / 小程序前端，实时预览卡片效果
