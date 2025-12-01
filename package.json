@@ -1,17 +1,40 @@
 {
-  "name": "wanka-compiler",
-  "version": "1.0.0",
-  "description": "wanka-compiler：AI 玩卡生成器，通过 OpenAI 定制卡片内容，并将图片上传至腾讯云 COS",
-  "type": "module",
-  "main": "src/generateCard.js",
+  "name": "temp-app",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "generate": "node src/generateCard.js"
+    "dev": "next dev -p 7001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
-    "cos-nodejs-sdk-v5": "^2.13.5",
-    "openai": "^4.0.0",
-    "dotenv": "^16.0.0",
-    "node-vibrant": "^3.2.1",
-    "sharp": "^0.33.0"
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "@types/uuid": "^10.0.0",
+    "clsx": "^2.1.1",
+    "konva": "^10.0.12",
+    "lucide-react": "^0.555.0",
+    "next": "16.0.6",
+    "openai": "^6.9.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-konva": "^19.2.1",
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.181.2",
+    "use-image": "^1.1.4",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
